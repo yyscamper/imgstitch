@@ -38,3 +38,22 @@ CvPoint*  ExtractPos(CvSeq* seq)
 	}
 	return pt;
 }
+
+void PrintMat(CvMat* m)
+{	
+	for(int r = 0; r < m->rows; r++){
+		printf("\n");
+		for(int c = 0; c < m->cols; c++){
+			printf("%3.4f\t", cvmGet(m, r, c));
+		}
+	}
+	printf("\n");
+}
+void SetMatVal(CvMat* m, double* val)
+{
+	for(int r = 0; r < m->rows; r++){
+		for(int c = 0; c < m->cols; c++){
+			cvmSet(m, r, c, val[r * m->rows + c]);
+		}
+	}
+}

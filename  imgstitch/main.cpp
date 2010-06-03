@@ -9,14 +9,21 @@
 
 #include "sift.h"
 #include "util.h"
+#include "match.h"
+#include "stitch.h"
 
 using namespace std;
 
 void WriteInfoToFile(CvSeq* seq, IplImage* srcImage, char* path);
 void ShowSiftImage(IplImage* srcImage, CvPoint* point, int numOfPoints);
+void TestMappingMat();
 
 int main(int argc, char** argv)
 {
+	TestMappingMat();
+	system("pause");
+	return 0;
+
 	IplImage *srcimage = 0;
 	char pathtempin[] = "chair.jpg";
 	char outFilePath[] = "air.txt";
@@ -77,4 +84,21 @@ void ShowSiftImage(IplImage* srcImage, CvPoint* point, int numOfPoints)
 	cvWaitKey(0);
 	cvDestroyAllWindows();
 	cvReleaseImage(&siftImage);
+}
+
+void TestMappingMat()
+{
+	CvPoint pt1[4];
+	CvPoint pt2[4];
+	pt1[0].x = 1; pt2[0].x = 4;
+	pt1[0].y = 2; pt2[0].y = 5;
+	pt1[1].x = 3; pt2[1].x = 6;
+	pt1[1].y = 4; pt2[1].y = 7;
+	pt1[2].x = 5; pt2[2].x = 8;
+	pt1[2].y = 6; pt2[2].y = 9;
+	pt1[3].x = 7; pt2[3].x = 10;
+	pt1[3].y = 8; pt2[3].y = 11;
+
+	CvMat* mapMat = GetMappingMat(pt1, pt2, 4);
+	PrintMat(mapMat);
 }
