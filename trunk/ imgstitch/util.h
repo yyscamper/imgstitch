@@ -10,4 +10,7 @@
 
 IplImage* PlotPoints(CvPoint* point, int numOfPoints, IplImage *image, int type);
 CvPoint*  ExtractPos(CvSeq* pDescSeq);
+void PrintMat(CvMat* m);
+void SetMatVal(CvMat* m, double* val);
+void GetRotateAngleOfMat(CvMat* mat);
 #endif
