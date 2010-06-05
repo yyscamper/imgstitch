@@ -1,30 +1,6 @@
 
 #include "util.h"
 
-IplImage* PlotPoints(CvPoint* point, int numOfPoints, IplImage *image, int type)
-{	
-	IplImage* img = cvCreateImage(cvGetSize(image), image->depth, image->nChannels);
-	img = cvCloneImage(image);
-	for(int i= 0; i < numOfPoints; i++){	
-		switch(type){
-			case PLOT_TYPE_DOT:
-				cvCircle(img, point[i], 4, CV_RGB(255, 0, 0), -1, 8, 0);
-				break;
-			case PLOT_TYPE_CIRCLE:
-				cvCircle(img, point[i], 4, CV_RGB(255, 0, 0), 1, 8, 0);
-				break;
-			case PLOT_TYPE_RECT:
-				cvRectangle(img, cvPoint(point[i].x - 2, point[i].y - 2), 
-					cvPoint(point[i].x + 2, point[i].y + 2), 
-					CV_RGB(255, 0, 0), 1, 8, 0);
-				break;
-			default:
-				break;
-		}
-	}
-	return img;
-}
-
 CvPoint*  ExtractPos(CvSeq* seq)
 {
 	CvPoint* pt = (CvPoint*)calloc(seq->total, sizeof(CvPoint));
@@ -41,6 +17,7 @@ CvPoint*  ExtractPos(CvSeq* seq)
 
 void PrintMat(CvMat* m)
 {	
+	printf("\n");
 	for(int r = 0; r < m->rows; r++){
 		printf("\n");
 		for(int c = 0; c < m->cols; c++){
@@ -57,3 +34,48 @@ void SetMatVal(CvMat* m, double* val)
 		}
 	}
 }
+
+float GetPixelVal(IplImage* image, int x, int y, int c)
+{
+	return ((float*)(image->imageData + x * image->widthStep))[y * image->nChannels + c];
+}
+
+void SetPixelVal(IplImage* image, int x, int y, int c, float val)
+{
+	((float*)(image->imageData + x * image->widthStep))[y * image->nChannels + c] = val;
+}
+
+void CopyPixelVal(IplImage* dstImage, int dstX, int dstY, IplImage* srcImage, int srcX, int srcY)
+{
+	assert(srcImage->nChannels == dstImage->nChannels && srcImage->depth == IPL_DEPTH_32F && dstImage->depth == IPL_DEPTH_32F);
+	for(int c = 0; c < srcImage->nChannels; c++){
+		//printf("\nBefore Copy: %f", ((float*)(dstImage->imageData + dstY * dstImage->widthStep))[dstX * dstImage->nChannels + c] );
+		((float*)(dstImage->imageData + dstY * dstImage->widthStep))[dstX * dstImage->nChannels + c] 
+			= ((float*)(srcImage->imageData + srcY * srcImage->widthStep))[srcX * srcImage->nChannels + c];
+		//printf("\nAfter Copy:%f", ((float*)(dstImage->imageData + dstY * dstImage->widthStep))[dstX * dstImage->nChannels + c]);
+	}
+}
+
+IplImage* GetFloatImage(IplImage* srcImage)
+{
+	IplImage* dstImage = cvCreateImage(cvGetSize(srcImage), IPL_DEPTH_32F ,srcImage->nChannels);
+	if(srcImage->depth == IPL_DEPTH_8U){
+		cvConvertScale(srcImage, dstImage, 1/255.0);
+	}else if(srcImage->depth == IPL_DEPTH_32F){
+		cvCopyImage(srcImage, dstImage);
+	}else{
+		printf("\nIn GetFloatImage(), the depth of input image is not IPL_DEPTH_8U!");
+		return NULL;
+	}
+	return dstImage;	
+}
+
+bool IsPointInRect(CvRect* rect, int x, int y)
+{
+	if(rect == NULL){
+		return false;
+	}
+	return (x >= rect->x && x < rect->x + rect->width && y >= rect->y && y < rect->y + rect->height);
+}
+
+

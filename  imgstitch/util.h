@@ -4,13 +4,14 @@
 
 #include <cv.h>
 
-#define PLOT_TYPE_DOT		0
-#define PLOT_TYPE_CIRCLE    1
-#define PLOT_TYPE_RECT		2
-
-IplImage* PlotPoints(CvPoint* point, int numOfPoints, IplImage *image, int type);
 CvPoint*  ExtractPos(CvSeq* pDescSeq);
 void PrintMat(CvMat* m);
 void SetMatVal(CvMat* m, double* val);
-void GetRotateAngleOfMat(CvMat* mat);
+
+float GetPixelVal(IplImage* image, int x, int y, int c);
+void SetPixelVal(IplImage* image, int x, int y, int c, float val);
+void CopyPixelVal(IplImage* dstImage, int dstX, int dstY, IplImage* srcImage, int srcX, int srcY);
+IplImage* GetFloatImage(IplImage* srcImage);
+bool IsPointInRect(CvRect* rect, int x, int y);
+
 #endif

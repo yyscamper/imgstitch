@@ -18,12 +18,7 @@ CvMat* GetMappingMat(CvPoint* pt1, CvPoint* pt2, int numOfPts)
 		cvmSet(b, r, 0, pt2[r].x);
 		cvmSet(b, r, 1, pt2[r].y);
 	}
-
-	PrintMat(P);
-	PrintMat(b);
-
-	cvSolve(P, b, a, CV_LU);
-
+	cvSolve(P, b, a, CV_QR);
 	cvReleaseMat(&P);
 	cvReleaseMat(&b);
 	return a;

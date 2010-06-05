@@ -11,19 +11,87 @@
 #include "util.h"
 #include "match.h"
 #include "stitch.h"
+#include "ui.h"
 
 using namespace std;
 
 void WriteInfoToFile(CvSeq* seq, IplImage* srcImage, char* path);
 void ShowSiftImage(IplImage* srcImage, CvPoint* point, int numOfPoints);
 void TestMappingMat();
+void TestStitchImage();
+void TestSiftFeature();
+void TestCopyPixel();
+void TestManulSelectMatchPoint();
+void TestManulStitch();
 
 int main(int argc, char** argv)
 {
-	TestMappingMat();
+	//TestCopyPixel();
+	//TestStitchImage();
+	//TestMappingMat();
+	//TestManulSelectMatchPoint();
+	TestManulStitch();
+
+	//ShowMsgWnd("Msg Wnd", "Hello, this is the message!");
 	system("pause");
 	return 0;
+}
 
+void TestStitchImage()
+{
+	int numOfImages = 2;
+	char** imageNames = (char**)calloc(numOfImages, sizeof(char*));
+	IplImage** image = (IplImage**)calloc(numOfImages, sizeof(IplImage*));
+	CvPoint pt1[4];
+	CvPoint pt2[4];
+	CvMat* mapMat = NULL;
+	IplImage* dstImage = NULL;
+
+	imageNames[0] = "dolphin_a1.jpg";
+	imageNames[1] = "dolphin_a2_rot30.jpg";
+	
+	pt1[0].x = 196; pt2[0].x = 44;
+	pt1[0].y = 144; pt2[0].y = 140;
+	pt1[1].x = 162; pt2[1].x = 11;
+	pt1[1].y = 176; pt2[1].y = 175;
+	pt1[2].x = 154; pt2[2].x = 2;
+	pt1[2].y = 152; pt2[2].y = 123;
+	pt1[3].x = 245; pt2[3].x = 94;
+	pt1[3].y = 177; pt2[3].y = 176;
+
+	mapMat = GetMappingMat(pt2, pt1, 4);
+	double rotAngle = CV_PI/6;
+	cvmSet(mapMat, 0, 0, cos(rotAngle));
+	cvmSet(mapMat, 0, 1, sin(rotAngle));
+	cvmSet(mapMat, 1, 0, -sin(rotAngle));
+	cvmSet(mapMat, 1, 1, cos(rotAngle));
+	cvmSet(mapMat, 2, 0, 128 * cos(rotAngle));
+	cvmSet(mapMat, 2, 1, 128 * cos(rotAngle));
+	for(int i=0; i<numOfImages; i++){
+		image[i] = cvLoadImage(imageNames[i], CV_LOAD_IMAGE_COLOR);
+		if(image[i] == NULL){
+			printf("\nError: failed to load image: %s !", imageNames[i]);
+			return;
+		}
+	}
+	
+	dstImage = StitchImages(image[0], image[1], mapMat);
+	cvNamedWindow("Stitch Image");
+	cvShowImage("Stitch Image", dstImage);
+	cvWaitKey(0);
+
+	cvDestroyAllWindows();
+	cvReleaseImage(&dstImage);
+	cvReleaseMat(&mapMat);
+	for(int i=0; i<numOfImages; i++){
+		cvReleaseImage(&image[i]);
+	}
+	free(image);
+	free(imageNames);
+}
+
+void TestSiftFeature()
+{
 	IplImage *srcimage = 0;
 	char pathtempin[] = "chair.jpg";
 	char outFilePath[] = "air.txt";
@@ -49,7 +117,53 @@ int main(int argc, char** argv)
 	cvReleaseImage(&srcimage);
 	cvReleaseMemStorage(&descriptorstorage);
 	free(pPointArr);
-	return 0;
+}
+
+
+void ShowSiftImage(IplImage* srcImage, CvPoint* point, int numOfPoints)
+{
+	IplImage* siftImage = PlotPoints(point, numOfPoints, srcImage, PLOT_TYPE_DOT);
+	cvNamedWindow("SIFT Image");
+	cvShowImage("SIFT Image", siftImage);
+	cvWaitKey(0);
+	cvDestroyAllWindows();
+	cvReleaseImage(&siftImage);
+}
+
+void TestMappingMat()
+{
+	CvPoint pt1[4];
+	CvPoint pt2[4];
+	/*pt1[0].x = 1; pt2[0].x = 4;
+	pt1[0].y = 2; pt2[0].y = 5;
+	pt1[1].x = 3; pt2[1].x = 6;
+	pt1[1].y = 4; pt2[1].y = 7;
+	pt1[2].x = 5; pt2[2].x = 8;
+	pt1[2].y = 6; pt2[2].y = 9;
+	pt1[3].x = 7; pt2[3].x = 10;
+	pt1[3].y = 8; pt2[3].y = 11;*/
+
+	/*pt1[0].x = 1; pt2[0].x = 4;
+	pt1[0].y = 1; pt2[0].y = 4;
+	pt1[1].x = 2; pt2[1].x = 5;
+	pt1[1].y = 1; pt2[1].y = 4;
+	pt1[2].x = 2; pt2[2].x = 5;
+	pt1[2].y = 5; pt2[2].y = 8;
+	pt1[3].x = 1; pt2[3].x = 4;
+	pt1[3].y = 3; pt2[3].y = 6;*/
+
+	//dolphin_1, dolphin_2
+	pt1[0].x = 196; pt2[0].x = 44;
+	pt1[0].y = 144; pt2[0].y = 140;
+	pt1[1].x = 162; pt2[1].x = 11;
+	pt1[1].y = 176; pt2[1].y = 175;
+	pt1[2].x = 154; pt2[2].x = 2;
+	pt1[2].y = 152; pt2[2].y = 123;
+	pt1[3].x = 245; pt2[3].x = 94;
+	pt1[3].y = 177; pt2[3].y = 176;
+
+	CvMat* mapMat = GetMappingMat(pt2, pt1, 4);
+	PrintMat(mapMat);
 }
 
 void WriteInfoToFile(CvSeq* seq, IplImage* srcImage, char* path)
@@ -76,29 +190,69 @@ void WriteInfoToFile(CvSeq* seq, IplImage* srcImage, char* path)
 	outFile.close();
 }
 
-void ShowSiftImage(IplImage* srcImage, CvPoint* point, int numOfPoints)
+void TestCopyPixel()
 {
-	IplImage* siftImage = PlotPoints(point, numOfPoints, srcImage, PLOT_TYPE_DOT);
-	cvNamedWindow("SIFT Image");
-	cvShowImage("SIFT Image", siftImage);
+	char* imageName = "dolphin_1.jpg";
+	IplImage* image = cvLoadImage(imageName, CV_LOAD_IMAGE_COLOR);
+	if(image == NULL){
+		printf("\nError: failed to load image: %s !", imageName);
+		return;
+	}
+
+	IplImage* srcImage = cvCreateImage(cvGetSize(image), IPL_DEPTH_32F ,image->nChannels);
+	cvConvertScale(image, srcImage, 1/255.0);
+	IplImage* cpyImage = cvCreateImage(cvGetSize(srcImage), srcImage->depth, srcImage->nChannels);
+	assert(cpyImage != NULL);
+	for( int x=0; x<srcImage->width/2; x++){
+		for(int y=0; y<srcImage->height/4; y++){
+			CopyPixelVal(cpyImage, x, y, srcImage, x, y);
+		}
+	}
+
+	cvNamedWindow(imageName);
+	cvShowImage(imageName, cpyImage);
+	cvWaitKey(0);
+
+	cvDestroyAllWindows();
+	cvReleaseImage(&cpyImage);
+	cvReleaseImage(&srcImage);
+}
+
+void TestManulSelectMatchPoint()
+{
+	char* imageName1 = "dolphin_a1.jpg";
+	char* imageName2 = "dolphin_a2_rot30.jpg";
+	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
+	if(image1 == NULL){
+		printf("\nError: failed to load image: %s !", imageName1);
+		return;
+	}
+	IplImage* image2 = cvLoadImage(imageName2, CV_LOAD_IMAGE_COLOR);
+	if(image2 == NULL){
+		printf("\nError: failed to load image: %s !", imageName2);
+		return;
+	}
+	ManualSelectMatchPoints(image1, image2);
 	cvWaitKey(0);
 	cvDestroyAllWindows();
-	cvReleaseImage(&siftImage);
 }
 
-void TestMappingMat()
+void TestManulStitch()
 {
-	CvPoint pt1[4];
-	CvPoint pt2[4];
-	pt1[0].x = 1; pt2[0].x = 4;
-	pt1[0].y = 2; pt2[0].y = 5;
-	pt1[1].x = 3; pt2[1].x = 6;
-	pt1[1].y = 4; pt2[1].y = 7;
-	pt1[2].x = 5; pt2[2].x = 8;
-	pt1[2].y = 6; pt2[2].y = 9;
-	pt1[3].x = 7; pt2[3].x = 10;
-	pt1[3].y = 8; pt2[3].y = 11;
-
-	CvMat* mapMat = GetMappingMat(pt1, pt2, 4);
-	PrintMat(mapMat);
+	char* imageName1 = "girl_2.jpg";
+	char* imageName2 = "girl_4_rot30.jpg";
+	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
+	if(image1 == NULL){
+		printf("\nError: failed to load image: %s !", imageName1);
+		return;
+	}
+	IplImage* image2 = cvLoadImage(imageName2, CV_LOAD_IMAGE_COLOR);
+	if(image2 == NULL){
+		printf("\nError: failed to load image: %s !", imageName2);
+		return;
+	}
+	
+	ManulStitch(image1, image2);
 }
+
+
