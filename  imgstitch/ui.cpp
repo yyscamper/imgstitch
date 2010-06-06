@@ -4,7 +4,7 @@
 #include "match.h"
 #include "stitch.h"
 
-#define NUM_POINTS 6
+#define NUM_POINTS 4
 IplImage* g_image = NULL;
 CvPoint g_point1[NUM_POINTS];
 CvPoint g_point2[NUM_POINTS];
@@ -112,14 +112,15 @@ bool IsPointSelected(CvPoint thePoint, CvPoint* plotPool, int numOfPoinsInPool, 
 
 void PlotMatchLine(IplImage* image, CvPoint* pt1, int num1, CvPoint* pt2, int num2)
 {
+	int radius = 2;
 	if(image == NULL || pt1 == NULL || pt2 == NULL || (num1 == 0 && num2 == 0)){
 		return;
 	}
 	for(int i=0; i<num1; i++){
-		cvCircle(image, pt1[i], 4, CV_RGB(255, 0, 0), -1, 8, 0);
+		cvCircle(image, pt1[i], radius, CV_RGB(255, 0, 0), -1, 8, 0);
 	}
 	for(int i=0; i<num2; i++){
-		cvCircle(image, pt2[i], 4, CV_RGB(255, 0, 0), -1, 8, 0);
+		cvCircle(image, pt2[i], radius, CV_RGB(255, 0, 0), -1, 8, 0);
 	}
 	for(int i=0; i < min(num1, num2); i++){
 		cvLine(image, pt1[i], pt2[i], CV_RGB(255, 0, 0), 1, 8, 0);
@@ -259,8 +260,20 @@ DWORD WINAPI ManualStitchThread(LPVOID param)
 		}
 	}
 
-	CvMat* mapMat = GetMappingMat(point1, point2, numOfPoints);
+	printf("\n\nThe Selected Points: \n");
+	printf("Left:  ");
+	for(int i=0; i < g_ptr1; i++){
+		printf("(%3d, %3d) ", g_point1[i].x, g_point1[i].y);
+	}
+	printf("\nRight: ");
+	for(int i=0; i < g_ptr2; i++){
+		printf("(%3d, %3d) ", g_point2[i].x, g_point2[i].y);
+	}
+
+	CvMat* mapMat = GetMappingMat(point2, point1, numOfPoints);
 	PrintMat(mapMat);
+	//cvmSet(mapMat, 2, 0, -210.7278);
+	//cvmSet(mapMat, 2, 1, 190.5492);
 
 	IplImage* dstImage = StitchImages(image1, image2, mapMat);
 	cvNamedWindow("Stitch Image");

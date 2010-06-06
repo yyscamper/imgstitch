@@ -2,6 +2,30 @@
 #ifndef _IMAGE_STITCH_MATCH_H_
 #define _IMAGE_STITCH_MATCH_H_
 #include "cv.h"
+
+/**
+ * 根据输入的匹配点，获取映射矩阵
+ * 函数获得的是从fromPoint映射到toPoint的映射矩阵
+ * @param fromPoint 映射的源点，相当于映射函数的定义域
+ * @param toPoint   映射的像点， 相当于映射函数的值域
+ * @param numOfPts  匹配点个数
+ * @return 映射矩阵，为3x2的浮点数矩阵
+ * @notice 注意fromPoint与toPoint的位置不要弄反了
+ */
+CvMat* GetMappingMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts);
+
+/**
+ * 使用RANSAC方法获取映射矩阵
+ * @param fromPoint 输入的匹配点1，相当于映射函数的定义域
+ * @param toPoint 输入的匹配点2， 相当于映射函数的值域
+ * @param numOfPts 匹配点的个数
+ * @return 映射矩阵，为3x2的浮点数矩阵
+ * @notice 注意fromPoint与toPoint的位置不要弄反了
+ */
+CvMat* Ransac(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts);
+
+//-------注意： 以下的两个函数暂时不用-------------//
+
 /**
  *  匹配点结构体
  *  该结构体定义了两幅图像中匹配点的坐标信息。数组pt1、pt2分别为两幅图像的点，pt1中各个点与pt2中对应位置的点匹配，
@@ -43,14 +67,6 @@ int GetMatchInfo(IplImage** ppSrcImg, int numOfSrcImg, IplImage** ppDstImg, int*
  */
 int GetMappingMat(IplImage** ppSrcImg, int numOfSrcImg, IplImage** ppDstImg, int* numOfDstImg, CvMat** ppHomMatrix);
 
-CvMat* GetMappingMat(CvPoint* pt1, CvPoint* pt2, int numOfPts);
 
-/**
- * 使用RANSAC方法获取单应矩阵
- * @param pt1
- * @param pt2
- * @param numOfPts
- */
-CvMat* Ransac(CvPoint* pt1, CvPoint* pt2, int numOfPts);
 
 #endif
