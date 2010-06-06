@@ -2,7 +2,7 @@
 #include <assert.h>
 #include "util.h"
 
-CvMat* GetMappingMat(CvPoint* pt1, CvPoint* pt2, int numOfPts)
+CvMat* GetMappingMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts)
 {
 	//方法一, 参考：http://www.irahul.com/workzone/stitch/index.php
 	//assert(numOfPts == 4);
@@ -12,11 +12,11 @@ CvMat* GetMappingMat(CvPoint* pt1, CvPoint* pt2, int numOfPts)
 
 	//填充P矩阵
 	for(int r = 0; r < numOfPts; r++){
-		cvmSet(P, r, 0, pt1[r].x);
-		cvmSet(P, r, 1, pt1[r].y);
+		cvmSet(P, r, 0, fromPoints[r].x);
+		cvmSet(P, r, 1, fromPoints[r].y);
 		cvmSet(P, r, 2, 1);
-		cvmSet(b, r, 0, pt2[r].x);
-		cvmSet(b, r, 1, pt2[r].y);
+		cvmSet(b, r, 0, toPoints[r].x);
+		cvmSet(b, r, 1, toPoints[r].y);
 	}
 	cvSolve(P, b, a, CV_QR);
 	cvReleaseMat(&P);
@@ -24,7 +24,7 @@ CvMat* GetMappingMat(CvPoint* pt1, CvPoint* pt2, int numOfPts)
 	return a;
 }
 
-CvMat* Ransac(CvPoint* pt1, CvPoint* pt2, int numOfPts)
+CvMat* Ransac(CvPoint* fromPoint, CvPoint* toPoint, int numOfPts)
 {
 	int numOfPtsPerIter = 4; //每次迭代取点的个数
 	double pinliers = 0.8; //置信概率

@@ -23,6 +23,7 @@ void TestSiftFeature();
 void TestCopyPixel();
 void TestManulSelectMatchPoint();
 void TestManulStitch();
+void TestSolve();
 
 int main(int argc, char** argv)
 {
@@ -31,6 +32,8 @@ int main(int argc, char** argv)
 	//TestMappingMat();
 	//TestManulSelectMatchPoint();
 	TestManulStitch();
+	//TestSolve();
+
 
 	//ShowMsgWnd("Msg Wnd", "Hello, this is the message!");
 	system("pause");
@@ -239,8 +242,18 @@ void TestManulSelectMatchPoint()
 
 void TestManulStitch()
 {
-	char* imageName1 = "girl_2.jpg";
-	char* imageName2 = "girl_4_rot30.jpg";
+	//char* imageName1 = "girl_b1.jpg";
+	//char* imageName2 = "girl_b2_rot30.jpg";
+
+	//char* imageName1 = "girl_2.jpg";
+	//char* imageName2 = "girl_5_rot45.jpg";
+
+	//char* imageName1 = "ee_1.jpg";
+	//char* imageName2 = "ee_2.jpg";
+
+	char* imageName1 = "girl_b1.jpg";
+	char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
+
 	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
 	if(image1 == NULL){
 		printf("\nError: failed to load image: %s !", imageName1);
@@ -255,4 +268,29 @@ void TestManulStitch()
 	ManulStitch(image1, image2);
 }
 
+void TestSolve()
+{
+	float data1[] = {
+	1, 2, 0,
+	4, 5, 6,
+	1, 1, 0,
+	1, 1, 1
+	};
+
+	float data2[] = {
+		1, 1,
+		2, 0,
+		3, 0,
+		3, 2
+	};
+
+	CvMat mat1, mat2;
+	cvInitMatHeader(&mat1, 4, 3, CV_32FC1, data1, CV_AUTOSTEP);
+	PrintMat(&mat1);
+	cvInitMatHeader(&mat2, 4, 2, CV_32FC1, data2, CV_AUTOSTEP);
+	PrintMat(&mat2);
+	CvMat* pDstMat = cvCreateMat(3, 2, CV_32FC1);
+	cvSolve(&mat1, &mat2, pDstMat, CV_QR);
+	PrintMat(pDstMat);
+}
 
