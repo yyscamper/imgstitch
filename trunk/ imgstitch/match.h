@@ -17,11 +17,12 @@ CvMat* GetMapMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts);
 /**
  * 根据映射关系，获取映射值
  * 映射关系通过映射矩阵来表示，此功能相当于定义了函数体，根据输入参数求函数值
- * @param point 输入的点
+ * @param srcPoint 输入的点
+ * @param pDstPoint 映射后的点的指针
  * @param mapMat 映射矩阵，应该为3x2的数组
  * @return 映射后得到的像点
  */
-CvPoint GetMapVal(CvPoint point, CvMat* mapMat);
+void GetMapVal(CvPoint srcPoint, CvPoint* pDstPoint, CvMat* mapMat);
 
 /**
  * 批量获取映射值

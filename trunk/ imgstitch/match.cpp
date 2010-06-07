@@ -24,20 +24,18 @@ CvMat* GetMapMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts)
 	return a;
 }
 
-CvPoint GetMapVal(CvPoint point, CvMat* mapMat)
+void GetMapVal(CvPoint srcPoint, CvPoint* pDstPoint, CvMat* mapMat)
 {
 	CvMat* fromMat = cvCreateMat(1, 3, CV_32FC1);
 	CvMat* toMat = cvCreateMat(1, 2, CV_32FC1);
-	cvmSet(fromMat, 0, 0, point.x);
-	cvmSet(fromMat, 0, 1, point.y);
+	cvmSet(fromMat, 0, 0, srcPoint.x);
+	cvmSet(fromMat, 0, 1, srcPoint.y);
 	cvmSet(fromMat, 0, 2, 1);
 	cvGEMM(fromMat, mapMat, 1, NULL, 0, toMat, 0);
-	CvPoint dstPoint;
-	dstPoint.x = cvRound(cvmGet(toMat, 0, 0));
-	dstPoint.y = cvRound(cvmGet(toMat, 0, 1));
+	pDstPoint->x = cvRound(cvmGet(toMat, 0, 0));
+	pDstPoint->y = cvRound(cvmGet(toMat, 0, 1));
 	cvReleaseMat(&fromMat);
 	cvReleaseMat(&toMat);
-	return dstPoint;
 }
 
 void GetMapValInBatch(CvPoint* pSrcPoints, int numOfPoints, CvPoint* pDstPoints, CvMat* mapMat)

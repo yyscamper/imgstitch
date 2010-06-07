@@ -49,6 +49,8 @@ IplImage* StitchImages(IplImage* image1, IplImage* image2, CvMat* mapMat)
 	//	printf("\n(%d, %d) ------->(%d, %d)\n", inX, inY, mappedPoint.x, mappedPoint.y);
 	//}
 	
+	CvPoint mapVertex[4]; //存储image2中四个顶点的映射点
+	
 
 
 	for(int x = 0; x < srcImage2->width; x++){
