@@ -62,7 +62,7 @@ void TestStitchImage()
 	pt1[3].x = 245; pt2[3].x = 94;
 	pt1[3].y = 177; pt2[3].y = 176;
 
-	mapMat = GetMappingMat(pt2, pt1, 4);
+	mapMat = GetMapMat(pt2, pt1, 4);
 	double rotAngle = CV_PI/6;
 	cvmSet(mapMat, 0, 0, cos(rotAngle));
 	cvmSet(mapMat, 0, 1, sin(rotAngle));
@@ -165,7 +165,7 @@ void TestMappingMat()
 	pt1[3].x = 245; pt2[3].x = 94;
 	pt1[3].y = 177; pt2[3].y = 176;
 
-	CvMat* mapMat = GetMappingMat(pt2, pt1, 4);
+	CvMat* mapMat = GetMapMat(pt2, pt1, 4);
 	PrintMat(mapMat);
 }
 

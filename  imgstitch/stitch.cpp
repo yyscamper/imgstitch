@@ -1,6 +1,7 @@
 
 #include "stitch.h"
 #include "util.h"
+#include "match.h"
 
 IplImage* StitchImages(IplImage* image1, IplImage* image2, CvMat* mapMat)
 {
@@ -52,6 +53,11 @@ IplImage* StitchImages(IplImage* image1, IplImage* image2, CvMat* mapMat)
 
 	for(int x = 0; x < srcImage2->width; x++){
 		for(int y = 0; y < srcImage2->height; y++){
+
+			//mappedPoint = GetMapVal(cvPoint(x, y), mapMat);
+			//mappedPoint.x += offsetPoint.x;
+			//mappedPoint.y += offsetPoint.y;
+
 			cvmSet(fromMat, 0, 0, x);
 			cvmSet(fromMat, 0, 1, y);
 			cvmSet(fromMat, 0, 2, 1);
