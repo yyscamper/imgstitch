@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="E:\Project\ImageStitch\VSProject\res"
+				WorkingDirectory="E:\Project\ImageStitch\VSProject\ImageStitch\res"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"

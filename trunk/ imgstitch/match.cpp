@@ -2,7 +2,7 @@
 #include <assert.h>
 #include "util.h"
 
-CvMat* GetMappingMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts)
+CvMat* GetMapMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts)
 {
 	//方法一, 参考：http://www.irahul.com/workzone/stitch/index.php
 	//assert(numOfPts == 4);
@@ -22,6 +22,38 @@ CvMat* GetMappingMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts)
 	cvReleaseMat(&P);
 	cvReleaseMat(&b);
 	return a;
+}
+
+CvPoint GetMapVal(CvPoint point, CvMat* mapMat)
+{
+	CvMat* fromMat = cvCreateMat(1, 3, CV_32FC1);
+	CvMat* toMat = cvCreateMat(1, 2, CV_32FC1);
+	cvmSet(fromMat, 0, 0, point.x);
+	cvmSet(fromMat, 0, 1, point.y);
+	cvmSet(fromMat, 0, 2, 1);
+	cvGEMM(fromMat, mapMat, 1, NULL, 0, toMat, 0);
+	CvPoint dstPoint;
+	dstPoint.x = cvRound(cvmGet(toMat, 0, 0));
+	dstPoint.y = cvRound(cvmGet(toMat, 0, 1));
+	cvReleaseMat(&fromMat);
+	cvReleaseMat(&toMat);
+	return dstPoint;
+}
+
+void GetMapValInBatch(CvPoint* pSrcPoints, int numOfPoints, CvPoint* pDstPoints, CvMat* mapMat)
+{
+	CvMat* fromMat = cvCreateMat(1, 3, CV_32FC1);
+	CvMat* toMat = cvCreateMat(1, 2, CV_32FC1);
+	for(int i=0; i<numOfPoints; i++){
+		cvmSet(fromMat, 0, 0, pSrcPoints[i].x);
+		cvmSet(fromMat, 0, 1, pSrcPoints[i].y);
+		cvmSet(fromMat, 0, 2, 1);
+		cvGEMM(fromMat, mapMat, 1, NULL, 0, toMat, 0);
+		pDstPoints[i].x = cvRound(cvmGet(toMat, 0, 0));
+		pDstPoints[i].y = cvRound(cvmGet(toMat, 0, 1));
+	}
+	cvReleaseMat(&fromMat);
+	cvReleaseMat(&toMat);
 }
 
 CvMat* Ransac(CvPoint* fromPoint, CvPoint* toPoint, int numOfPts)

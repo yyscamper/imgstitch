@@ -12,7 +12,26 @@
  * @return 映射矩阵，为3x2的浮点数矩阵
  * @notice 注意fromPoint与toPoint的位置不要弄反了
  */
-CvMat* GetMappingMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts);
+CvMat* GetMapMat(CvPoint* fromPoints, CvPoint* toPoints, int numOfPts);
+
+/**
+ * 根据映射关系，获取映射值
+ * 映射关系通过映射矩阵来表示，此功能相当于定义了函数体，根据输入参数求函数值
+ * @param point 输入的点
+ * @param mapMat 映射矩阵，应该为3x2的数组
+ * @return 映射后得到的像点
+ */
+CvPoint GetMapVal(CvPoint point, CvMat* mapMat);
+
+/**
+ * 批量获取映射值
+ * 此函数相当于多次调用GetMapVal，但是速度更快
+ * @param pSrcPoints 输入的点，为一个数组
+ * @param numOfPoints 输入点数组的元素个数
+ * @param pDstPoints 保存映射后得到的像点的数组名，注意外部应该为其分配好内存空间
+ * @param mapMat 映射矩阵，应该为3x2的数组
+ */
+void GetMapValInBatch(CvPoint* pSrcPoints, int numOfPoints, CvPoint* pDstPoints, CvMat* mapMat);
 
 /**
  * 使用RANSAC方法获取映射矩阵
@@ -65,7 +84,7 @@ int GetMatchInfo(IplImage** ppSrcImg, int numOfSrcImg, IplImage** ppDstImg, int*
  *              同时pMatchPoint数组中的最后一项存储了第一幅与最后一幅的匹配点信息。
  *		    否则返回0.
  */
-int GetMappingMat(IplImage** ppSrcImg, int numOfSrcImg, IplImage** ppDstImg, int* numOfDstImg, CvMat** ppHomMatrix);
+int GetMapMat(IplImage** ppSrcImg, int numOfSrcImg, IplImage** ppDstImg, int* numOfDstImg, CvMat** ppHomMatrix);
 
 
 

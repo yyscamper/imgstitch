@@ -270,7 +270,7 @@ DWORD WINAPI ManualStitchThread(LPVOID param)
 		printf("(%3d, %3d) ", g_point2[i].x, g_point2[i].y);
 	}
 
-	CvMat* mapMat = GetMappingMat(point2, point1, numOfPoints);
+	CvMat* mapMat = GetMapMat(point2, point1, numOfPoints);
 	PrintMat(mapMat);
 	//cvmSet(mapMat, 2, 0, -210.7278);
 	//cvmSet(mapMat, 2, 1, 190.5492);
