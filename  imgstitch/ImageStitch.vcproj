@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cv200d.lib highgui200d.lib cxcore200d.lib"
+				AdditionalDependencies="cv200d.lib highgui200d.lib cxcore200d.lib libgsl.a libgsl.dll.a libgslcblas.a libgslcblas.dll.a"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -173,11 +173,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\imgfeatures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\kdtree.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\match.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\minpq.cpp"
 				>
 			</File>
 			<File
@@ -196,6 +208,14 @@
 				RelativePath=".\util.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xform.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="头文件"
@@ -203,7 +223,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\imgfeatures.h"
+				>
+			</File>
+			<File
+				RelativePath=".\kdtree.h"
+				>
+			</File>
+			<File
 				RelativePath=".\match.h"
+				>
+			</File>
+			<File
+				RelativePath=".\minpq.h"
 				>
 			</File>
 			<File
@@ -222,6 +254,14 @@
 				RelativePath=".\util.h"
 				>
 			</File>
+			<File
+				RelativePath=".\utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\xform.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="资源文件"
@@ -229,6 +269,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
