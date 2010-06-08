@@ -9,7 +9,6 @@ CvPoint*  ExtractPos(CvSeq* seq)
 	double zoomVal = 0.0;
 	for(int i=0; i < seq->total; i++){
 		pElem = (CvMat*)cvGetSeqElem(seq, i);
-		zoomVal =  1;//pow(2.0, cvmGet(pElem, 0, 2) - 1);
 		pt[i].x = cvRound(cvmGet(pElem, 0, 0) * zoomVal);
 		pt[i].y = cvRound(cvmGet(pElem, 0 ,1) * zoomVal);
 	}

@@ -15,4 +15,5 @@ IplImage* StitchTwoImages(IplImage* srcImage1, IplImage* srcImage2, CvMat* mapMa
 
 IplImage* StitchImages(IplImage** srcImages, int numOfImages, CvMat** mapMats);
 
+IplImage* AutoStitchTwoImages(IplImage* srcImage1, IplImage* srcImage2);
 #endif
