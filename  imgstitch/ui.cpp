@@ -296,12 +296,12 @@ DWORD WINAPI ManualStitchThread(LPVOID param)
 	printf("\nMapMat");
 	CvMat* mapMat = GetMapMat(point2, point1, numOfPoints);
 	PrintMat(mapMat);
-	CvMat* invMap1 = GetMapMat(point1, point2, numOfPoints);
+	/*CvMat* invMap1 = GetMapMat(point1, point2, numOfPoints);
 	printf("\nInvMap Using Points");
 	PrintMat(invMap1);
 	CvMat* invMap2 = GetInvMapMat(mapMat);
 	printf("\nInvMapMat Using GeInvMapMat");
-	PrintMat(invMap2);
+	PrintMat(invMap2);*/
 
 	IplImage* dstImage = StitchTwoImages(image1, image2, mapMat);
 	cvNamedWindow("Stitch Image");
@@ -331,4 +331,48 @@ void ManulStitch(IplImage* image1, IplImage* image2)
 	WaitForSingleObject(hThread, INFINITE);
 	//删除的线程资源。
 	CloseHandle(hThread);
+}
+
+IplImage* PlotMatchImage(IplImage* image1, IplImage* image2, CvPoint* pt1, CvPoint* pt2, int numOfPoints)
+{
+	CvSize imageSize;
+	CvRect rect[2];
+	int gap = 30;
+	imageSize.width = image1->width + image2->width + gap;
+	imageSize.height = max(image1->height, image2->height);
+
+	rect[0].x = 0;
+	rect[0].y = (imageSize.height - image1->height) / 2;
+	rect[0].width = image1->width;
+	rect[0].height = image1->height;
+
+	rect[1].x = image1->width + gap;
+	rect[1].y = (imageSize.height - image2->height) / 2;
+	rect[1].width = image2->width;
+	rect[1].height = image2->height;
+
+	IplImage* dstImage = cvCreateImage(imageSize, image1->depth, max(image1->nChannels, image2->nChannels));
+	cvSetZero(dstImage);
+	cvSetImageROI(dstImage, rect[0]);
+	cvCopyImage(image1, dstImage);
+	cvResetImageROI(dstImage);
+
+	cvSetImageROI(dstImage, rect[1]);
+	cvCopyImage(image2, dstImage);
+	cvResetImageROI(dstImage);
+	
+	CvPoint* cpyPt1 = (CvPoint*)calloc(numOfPoints, sizeof(CvPoint));
+	CvPoint* cpyPt2 = (CvPoint*)calloc(numOfPoints, sizeof(CvPoint));
+	memcpy(cpyPt1, pt1, sizeof(CvPoint)*numOfPoints);
+	memcpy(cpyPt2, pt2, sizeof(CvPoint)*numOfPoints);
+	for(int i=0; i<numOfPoints; i++){
+		cpyPt1[i].x += rect[0].x;
+		cpyPt1[i].y += rect[0].y;
+		cpyPt2[i].x += rect[1].x;
+		cpyPt2[i].y += rect[1].y;
+	}
+	PlotMatchLine(dstImage, cpyPt1, numOfPoints, cpyPt2, numOfPoints);
+	free(cpyPt1);
+	free(cpyPt2);
+	return dstImage;
 }

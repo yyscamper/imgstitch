@@ -3,7 +3,7 @@
 #include "util.h"
 #include "match.h"
 #include "highgui.h"
-
+#include "ui.h"
 inline bool Interpolate(double x, double y, IplImage* image, double* interVal)
 {
 	if( x<=0 || y<=0 || x >= image->width-1 || y >= image->height-1){
@@ -312,3 +312,46 @@ IplImage* StitchTwoImages(IplImage* image1, IplImage* image2, CvMat* mapMat)
 //	cvReleaseMat(&invMat);
 //	return dstImage;
 //}
+
+IplImage* AutoStitchTwoImages(IplImage* srcImage1, IplImage* srcImage2)
+{
+	CvPoint *pPoint1, *pPoint2;
+	bool swapFlag = false;
+	IplImage *pTempImage;
+	CvPoint *pTempPoint;
+	CvMat* mapMat = NULL; 
+	int numOfPoints = 0;
+
+	numOfPoints = GetMatchPoints(srcImage1, srcImage2, &pPoint1, &pPoint2, &swapFlag);
+	swapFlag = false;
+	if(swapFlag){
+		//swap the points
+		pTempPoint = pPoint1;
+		pPoint1 = pPoint2;
+		pPoint2 = pTempPoint;
+		//swap the images
+		pTempImage = srcImage1;
+		srcImage1 = srcImage2;
+		srcImage2 = pTempImage;
+	}
+	
+	
+	int selIndex[6];
+	mapMat = Ransac(pPoint2, pPoint1, numOfPoints, selIndex);	
+	printf("\n”≥…‰æÿ’ÛŒ™:");
+	PrintMat(mapMat);
+	CvPoint pt1[6], pt2[6];
+	for(int i=0; i<6; i++){
+		pt1[i].x = pPoint1[i].x;
+		pt1[i].y = pPoint1[i].y;
+		pt2[i].x = pPoint2[i].x;
+		pt2[i].y = pPoint2[i].y;
+	}
+	IplImage* pMatchImage = PlotMatchImage(srcImage1, srcImage2, pt1, pt2, 6);
+	cvNamedWindow("Match Image");
+	cvShowImage("Match Image", pMatchImage);
+	cvWaitKey(0);
+	cvDestroyWindow("Match Image");
+	cvReleaseImage(&pMatchImage);
+	return StitchTwoImages(srcImage1, srcImage2, mapMat);
+}

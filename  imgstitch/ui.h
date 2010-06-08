@@ -22,4 +22,8 @@ int GetSelectedMatchPoints(CvPoint** point1, CvPoint** point2);
 
 //通过人工选点进行图像拼接
 void ManulStitch(IplImage* image1, IplImage* image2);
+
+void PlotMatchLine(IplImage* image, CvPoint* pt1, int num1, CvPoint* pt2, int num2);
+
+IplImage* PlotMatchImage(IplImage* image1, IplImage* image2, CvPoint* pt1, CvPoint* pt2, int numOfPoints);
 #endif

@@ -33,6 +33,7 @@ void TestManulSelectMatchPoint();
 void TestManulStitch();
 void TestSolve();
 void TestInvMap();
+void TestSiftMatch();
 void TestAutoStitch();
 
 /* the maximum number of keypoint NN candidates to check during BBF search */
@@ -70,6 +71,7 @@ int main(int argc, char** argv)
 	//TestManulStitch();
 	//TestSolve();
 	//TestInvMap();
+	//TestSiftMatch();
 	TestAutoStitch();
 
 
@@ -280,8 +282,8 @@ void TestManulSelectMatchPoint()
 
 void TestManulStitch()
 {
-	//char* imageName1 = "girl_b1.jpg";
-	//char* imageName2 = "girl_b2_rot30.jpg";
+	char* imageName1 = "girl_b1.jpg";
+	char* imageName2 = "girl_b2_rot30.jpg";
 
 	//char* imageName1 = "girl_2.jpg";
 	//char* imageName2 = "girl_5_rot45.jpg";
@@ -289,8 +291,8 @@ void TestManulStitch()
 	//char* imageName1 = "ee_1.jpg";
 	//char* imageName2 = "ee_2.jpg";
 
-	char* imageName1 = "girl_b1.jpg";
-	char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
+	//char* imageName1 = "girl_b1.jpg";
+	//char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
 
 	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
 	if(image1 == NULL){
@@ -385,7 +387,7 @@ void TestInvMap()
 	cvReleaseImage(&image);
 }
 
-void TestAutoStitch()
+void TestSiftMatch()
 {
 	CvPoint* point1 = NULL;
 	CvPoint* point2 = NULL;
@@ -570,8 +572,6 @@ int match_index(IplImage* img1,IplImage* img2,CvPoint* point1,CvPoint* point2)
 
 	kd_root = kdtree_build( feat2, n2 );
 
-
-
 	for( i = 0; i < n1; i++ )
 	{
 		feat = feat1 + i;
@@ -687,4 +687,39 @@ int match_index(IplImage* img1,IplImage* img2,CvPoint* point1,CvPoint* point2)
 	free( feat2 );
 
 	return 0;
+}
+
+void TestAutoStitch()
+{
+	//char* imageName1 = "girl_b1.jpg";
+	//char* imageName2 = "girl_b2_rot30.jpg";
+
+	//char* imageName1 = "girl_2.jpg";
+	//char* imageName2 = "girl_5_rot45.jpg";
+
+	//char* imageName1 = "ee_1.jpg";
+	//char* imageName2 = "ee_2.jpg";
+
+	//char* imageName1 = "girl_b1.jpg";
+	//char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
+
+	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
+	if(image1 == NULL){
+		printf("\nError: failed to load image: %s !", imageName1);
+		return;
+	}
+	IplImage* image2 = cvLoadImage(imageName2, CV_LOAD_IMAGE_COLOR);
+	if(image2 == NULL){
+		printf("\nError: failed to load image: %s !", imageName2);
+		return;
+	}
+
+	IplImage* dstImage = AutoStitchTwoImages(image1, image2);
+	cvNamedWindow("Stitch Image");
+	cvShowImage("Stitch Image", dstImage);
+	cvWaitKey(0);
+	cvDestroyAllWindows();
+	cvReleaseImage(&dstImage);
+	cvReleaseImage(&image1);
+	cvReleaseImage(&image2);
 }
