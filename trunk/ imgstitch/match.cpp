@@ -111,10 +111,10 @@ CvMat* Ransac(CvPoint* fromPoint, CvPoint* toPoint, int numOfPts, int* pSelIndex
 	assert(numOfPts >= numOfPtsPerIter);
 	double pinliers = 0.9; //÷√–≈∏≈¬ 
 	int inlierCntThreshold = cvCeil(numOfPts * pinliers);
-	double distanceThreshold = 16;
+	double distanceThreshold = 9;
 
 	//int nIters = cvCeil(log(1 - pinliers) / log(1 - pow(pinliers, numOfPtsPerIter)));
-	int nIters = 32;
+	int nIters = 100;
 	//int *pSelIndex = (int*)calloc(numOfPtsPerIter, sizeof(int));
 	CvPoint* pSelFromPoints = (CvPoint*)calloc(numOfPtsPerIter, sizeof(CvPoint));
 	CvPoint* pSelToPoints = (CvPoint*)calloc(numOfPtsPerIter, sizeof(CvPoint));

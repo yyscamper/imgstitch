@@ -334,8 +334,7 @@ IplImage* AutoStitchTwoImages(IplImage* srcImage1, IplImage* srcImage2)
 		srcImage1 = srcImage2;
 		srcImage2 = pTempImage;
 	}
-	
-	
+
 	int selIndex[6];
 	mapMat = Ransac(pPoint2, pPoint1, numOfPoints, selIndex);	
 	printf("\n”≥…‰æÿ’ÛŒ™:");
@@ -347,11 +346,19 @@ IplImage* AutoStitchTwoImages(IplImage* srcImage1, IplImage* srcImage2)
 		pt2[i].x = pPoint2[i].x;
 		pt2[i].y = pPoint2[i].y;
 	}
-	IplImage* pMatchImage = PlotMatchImage(srcImage1, srcImage2, pt1, pt2, 6);
+
+	IplImage* pMatchImage = PlotMatchImage(srcImage1, srcImage2, pPoint1, pPoint2, numOfPoints);
 	cvNamedWindow("Match Image");
 	cvShowImage("Match Image", pMatchImage);
-	cvWaitKey(0);
-	cvDestroyWindow("Match Image");
-	cvReleaseImage(&pMatchImage);
+	//cvWaitKey(0);
+	//cvDestroyWindow("Match Image");
+	//cvReleaseImage(&pMatchImage);
+
+	IplImage* pSelMatchImage = PlotMatchImage(srcImage1, srcImage2, pt1, pt2, 6);
+	cvNamedWindow("Selected Match Image");
+	cvShowImage("Selected Match Image", pSelMatchImage);
+	//cvWaitKey(0);
+	//cvDestroyWindow("Match Image");
+	//cvReleaseImage(&pSelMatchImage);
 	return StitchTwoImages(srcImage1, srcImage2, mapMat);
 }
