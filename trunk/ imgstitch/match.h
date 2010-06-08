@@ -1,6 +1,7 @@
 
 #ifndef _IMAGE_STITCH_MATCH_H_
 #define _IMAGE_STITCH_MATCH_H_
+
 #include "cv.h"
 
 /**
