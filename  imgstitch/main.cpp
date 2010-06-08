@@ -700,8 +700,8 @@ void TestAutoStitch()
 	//char* imageName1 = "ee_1.jpg";
 	//char* imageName2 = "ee_2.jpg";
 
-	//char* imageName1 = "girl_b1.jpg";
-	//char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
+	char* imageName1 = "girl_b1.jpg";
+	char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
 
 	//char* imageName1 = "scenery1_a1.jpg";
 	//char* imageName2 = "scenery1_a2_rot15.jpg";
@@ -715,8 +715,8 @@ void TestAutoStitch()
 	//char* imageName1 = "sjtugate_a1.jpg";
 	//char* imageName2 = "sjtugate_a2_rot30.jpg";
 
-	char* imageName1 = "mj_a1.jpg";
-	char* imageName2 = "mj_a3_rot30_scale1.56.jpg";
+	//char* imageName1 = "mj_a1.jpg";
+	//char* imageName2 = "mj_a3_rot30_scale1.56.jpg";
 
 	//char* imageName1 = "children_a1.jpg";
 	//char* imageName2 = "children_a2_rot70.jpg";
@@ -726,6 +726,9 @@ void TestAutoStitch()
 
 	/*char* imageName1 = "avatar_a1.jpg";
 	char* imageName2 = "avatar_a2_rot40.jpg";*/
+
+	//char* imageName1 = "roti_a1.jpg";
+	//char* imageName2 = "roti_a2_rot45.jpg";
 
 	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
 	if(image1 == NULL){

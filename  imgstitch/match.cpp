@@ -261,6 +261,18 @@ int GetMatchPoints(IplImage* img1,IplImage* img2, CvPoint** ppPoint1, CvPoint** 
 		}
 		free( nbrs );
 	}
+	//删除具有相同的坐标的点
+	CvPoint* p1 = NULL, *p2 = NULL;//, *p3 = NULL, *p4 = NULL;
+	for(int i=0; i < up_seq->total ;i++){
+		p1 = (CvPoint*)cvGetSeqElem(up_seq, i);
+		for(int j = up_seq->total - 1; j > i; j--){
+			p2 = (CvPoint*)cvGetSeqElem(up_seq, j);
+			if(p1->x == p2->x && p1->y == p2->y){
+				cvSeqRemove(up_seq, j);
+				cvSeqRemove(down_seq, j);
+			}
+		}
+	}
 	totalMatchPoints = up_seq->total;
 	printf("Found %d total matches\n", totalMatchPoints);
 	//将匹配点序列转换为数组
