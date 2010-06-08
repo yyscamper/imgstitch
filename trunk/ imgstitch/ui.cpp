@@ -4,7 +4,7 @@
 #include "match.h"
 #include "stitch.h"
 
-#define NUM_POINTS 4
+#define NUM_POINTS 6
 IplImage* g_image = NULL;
 CvPoint g_point1[NUM_POINTS];
 CvPoint g_point2[NUM_POINTS];
@@ -205,6 +205,29 @@ void MouseHandler(int event, int x, int y, int flags, void* param)
 		printf("(%3d, %3d) ", g_point2[i].x, g_point2[i].y);
 	}*/
 
+	//Only for debug////////////////////////////////////////////
+	//g_point1[0].x = 91;
+	//g_point1[0].y = 98;
+	//g_point1[1].x = 69;
+	//g_point1[1].y = 99;
+	//g_point1[2].x = 107;
+	//g_point1[2].y = 185;
+	//g_point1[3].x = 200;
+	//g_point1[3].y = 258;
+
+	//g_point2[0].x = 308;
+	//g_point2[0].y = 80;
+	//g_point2[1].x = 289;
+	//g_point2[1].y = 70;
+	//g_point2[2].x = 280;
+	//g_point2[2].y = 163;
+	//g_point2[3].x = 323;
+	//g_point2[3].y = 272;
+
+	//g_ptr1 = 4;
+	//g_ptr2 = 4;
+	///////////////////////////////////////////////////////////////////
+
 	char* wndName = "Select 4 matching points:";
 	cvNamedWindow(wndName);
 	cpyImage = cvCloneImage(g_image);
@@ -263,19 +286,24 @@ DWORD WINAPI ManualStitchThread(LPVOID param)
 	printf("\n\nThe Selected Points: \n");
 	printf("Left:  ");
 	for(int i=0; i < g_ptr1; i++){
-		printf("(%3d, %3d) ", g_point1[i].x, g_point1[i].y);
+		printf("(%3d, %3d) ", g_point1[i].x - g_rect[0].x, g_point1[i].y - g_rect[0].y);
 	}
 	printf("\nRight: ");
 	for(int i=0; i < g_ptr2; i++){
-		printf("(%3d, %3d) ", g_point2[i].x, g_point2[i].y);
+		printf("(%3d, %3d) ", g_point2[i].x - g_rect[1].x, g_point2[i].y - g_rect[1].y);
 	}
-
+	
+	printf("\nMapMat");
 	CvMat* mapMat = GetMapMat(point2, point1, numOfPoints);
 	PrintMat(mapMat);
-	//cvmSet(mapMat, 2, 0, -210.7278);
-	//cvmSet(mapMat, 2, 1, 190.5492);
+	CvMat* invMap1 = GetMapMat(point1, point2, numOfPoints);
+	printf("\nInvMap Using Points");
+	PrintMat(invMap1);
+	CvMat* invMap2 = GetInvMapMat(mapMat);
+	printf("\nInvMapMat Using GeInvMapMat");
+	PrintMat(invMap2);
 
-	IplImage* dstImage = StitchImages(image1, image2, mapMat);
+	IplImage* dstImage = StitchTwoImages(image1, image2, mapMat);
 	cvNamedWindow("Stitch Image");
 	cvShowImage("Stitch Image", dstImage);
 

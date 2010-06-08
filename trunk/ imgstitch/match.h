@@ -34,6 +34,10 @@ void GetMapVal(CvPoint srcPoint, CvPoint* pDstPoint, CvMat* mapMat);
  */
 void GetMapValInBatch(CvPoint* pSrcPoints, int numOfPoints, CvPoint* pDstPoints, CvMat* mapMat);
 
+CvMat* GetInvMapMat(CvMat* mapMat);
+CvMat* GetInvMapVal(CvPoint srcPoint, CvPoint* pDstPoint, CvMat* invMapMat);
+
+CvMat* GetCascadeMapMat(CvMat** ppMatMats, int numOfMats);
 /**
  * 使用RANSAC方法获取映射矩阵
  * @param fromPoint 输入的匹配点1，相当于映射函数的定义域

@@ -24,6 +24,7 @@ void TestCopyPixel();
 void TestManulSelectMatchPoint();
 void TestManulStitch();
 void TestSolve();
+void TestInvMap();
 
 int main(int argc, char** argv)
 {
@@ -33,6 +34,7 @@ int main(int argc, char** argv)
 	//TestManulSelectMatchPoint();
 	TestManulStitch();
 	//TestSolve();
+	//TestInvMap();
 
 
 	//ShowMsgWnd("Msg Wnd", "Hello, this is the message!");
@@ -78,7 +80,7 @@ void TestStitchImage()
 		}
 	}
 	
-	dstImage = StitchImages(image[0], image[1], mapMat);
+	dstImage = StitchTwoImages(image[0], image[1], mapMat);
 	cvNamedWindow("Stitch Image");
 	cvShowImage("Stitch Image", dstImage);
 	cvWaitKey(0);
@@ -208,7 +210,7 @@ void TestCopyPixel()
 	assert(cpyImage != NULL);
 	for( int x=0; x<srcImage->width/2; x++){
 		for(int y=0; y<srcImage->height/4; y++){
-			CopyPixelVal(cpyImage, x, y, srcImage, x, y);
+			CopyPixelValF32(cpyImage, x, y, srcImage, x, y);
 		}
 	}
 
@@ -292,5 +294,58 @@ void TestSolve()
 	CvMat* pDstMat = cvCreateMat(3, 2, CV_32FC1);
 	cvSolve(&mat1, &mat2, pDstMat, CV_QR);
 	PrintMat(pDstMat);
+}
+
+void TestInvMap()
+{
+	char* imageName = "girl_b1.jpg";
+	IplImage* tempImage = cvLoadImage(imageName, CV_LOAD_IMAGE_COLOR);
+	if(tempImage == NULL){
+		printf("\nError: failed to load image: %s !", imageName);
+		return;
+	}
+	IplImage* image = GetFloatImage(tempImage);
+
+	float mapMatData[] = {
+		0.866, 0.5,
+		-0.5, 0.866,
+		100, 200
+	};
+	CvMat mapMat;
+	cvInitMatHeader(&mapMat, 3, 2, CV_32FC1, mapMatData, CV_AUTOSTEP);
+
+	IplImage* dstImage = cvCreateImage(cvSize(image->width * 3, image->height * 3), IPL_DEPTH_32F, image->nChannels);
+	CvPoint offsetPoint, mappedPoint;
+	offsetPoint.x = image->width;
+	offsetPoint.y = image->height;
+
+	CvMat* fromMat = cvCreateMat(1, 3, CV_32FC1);
+	CvMat* toMat = cvCreateMat(1, 2, CV_32FC1);
+	CvMat* invMat = GetInvMapMat(&mapMat);
+
+	PrintMat(&mapMat);printf("\n");
+	PrintMat(invMat);
+
+	for(int x = 0; x < image->width; x++){
+		for(int y = 0; y < image->height; y++){
+			cvmSet(fromMat, 0, 0, x);
+			cvmSet(fromMat, 0, 1, y);
+			cvmSet(fromMat, 0, 2, 1);
+			cvGEMM(fromMat, &mapMat, 1, NULL, 0, toMat, 0);
+			//cvGEMM(fromMat, invMat, 1, NULL, 0, toMat, 0);
+			mappedPoint.x = cvRound(cvmGet(toMat, 0, 0));
+			mappedPoint.y = cvRound(cvmGet(toMat, 0, 1));
+			mappedPoint.x += offsetPoint.x;
+			mappedPoint.y += offsetPoint.y;
+			CopyPixelValF32(dstImage, mappedPoint.x, mappedPoint.y, image, x, y);
+		}
+	}
+
+	cvNamedWindow("TestImage");
+	cvShowImage("TestImage", dstImage);
+	cvWaitKey(0);
+	cvDestroyAllWindows();
+	cvReleaseImage(&tempImage);
+	cvReleaseImage(&image);
 }
 

@@ -11,6 +11,8 @@
  * @param mapMat ”≥…‰æÿ’Û
  * @return ∆¥Ω”∫Ûµƒæÿ’Û
  */
-IplImage* StitchImages(IplImage* srcImage1, IplImage* srcImage2, CvMat* mapMat);
+IplImage* StitchTwoImages(IplImage* srcImage1, IplImage* srcImage2, CvMat* mapMat);
+
+IplImage* StitchImages(IplImage** srcImages, int numOfImages, CvMat** mapMats);
 
 #endif

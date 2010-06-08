@@ -1,5 +1,6 @@
 
 #include "util.h"
+#include "highgui.h"
 
 CvPoint*  ExtractPos(CvSeq* seq)
 {
@@ -35,17 +36,27 @@ void SetMatVal(CvMat* m, double* val)
 	}
 }
 
-float GetPixelVal(IplImage* image, int x, int y, int c)
+float GetPixelValF32(IplImage* image, int x, int y, int c)
 {
-	return ((float*)(image->imageData + x * image->widthStep))[y * image->nChannels + c];
+	return ((float*)(image->imageData + y * image->widthStep))[x * image->nChannels + c];
 }
 
-void SetPixelVal(IplImage* image, int x, int y, int c, float val)
+void SetPixelValF32(IplImage* image, int x, int y, int c, float val)
 {
-	((float*)(image->imageData + x * image->widthStep))[y * image->nChannels + c] = val;
+	((float*)(image->imageData + y * image->widthStep))[x * image->nChannels + c] = val;
 }
 
-void CopyPixelVal(IplImage* dstImage, int dstX, int dstY, IplImage* srcImage, int srcX, int srcY)
+unsigned char GetPixelValU8(IplImage* image, int x, int y, int c)
+{
+	return ((unsigned char*)(image->imageData + y * image->widthStep))[x * image->nChannels + c];
+}
+
+void SetPixelValU8(IplImage* image, int x, int y, int c, unsigned char val)
+{
+	((unsigned*)(image->imageData + y * image->widthStep))[x * image->nChannels + c] = val;
+}
+
+void CopyPixelValF32(IplImage* dstImage, int dstX, int dstY, IplImage* srcImage, int srcX, int srcY)
 {
 	assert(srcImage->nChannels == dstImage->nChannels && srcImage->depth == IPL_DEPTH_32F && dstImage->depth == IPL_DEPTH_32F);
 	for(int c = 0; c < srcImage->nChannels; c++){
@@ -76,6 +87,27 @@ bool IsPointInRect(CvRect* rect, int x, int y)
 		return false;
 	}
 	return (x >= rect->x && x < rect->x + rect->width && y >= rect->y && y < rect->y + rect->height);
+}
+
+void ShowMatImage(CvMat* mat)
+{
+	IplImage *img;
+	CvSize imgSize = cvSize(mat->cols, mat->rows);
+	if(mat->type == CV_8UC1){
+		img = cvCreateImageHeader(imgSize, IPL_DEPTH_8U, 1);
+	}else if(cvGetElemType(mat) == CV_32FC1){
+		img = cvCreateImageHeader(imgSize, IPL_DEPTH_32F, 1);
+	}else if(cvGetElemType(mat) == CV_8UC3){
+		img = cvCreateImageHeader(imgSize, IPL_DEPTH_8U, 3);
+	}else if(cvGetElemType(mat) == CV_32FC3){
+		img = cvCreateImageHeader(imgSize, IPL_DEPTH_32F, 3);
+	}
+	cvGetImage(mat, img);
+	cvNamedWindow("Image Show");
+	cvShowImage("Image Show", img);
+	cvWaitKey(0);
+	cvDestroyWindow("Image Show");
+	cvReleaseImageHeader(&img);
 }
 
 
