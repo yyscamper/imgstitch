@@ -703,6 +703,30 @@ void TestAutoStitch()
 	//char* imageName1 = "girl_b1.jpg";
 	//char* imageName2 = "girl_b2_rot30_s1.67333.jpg";
 
+	//char* imageName1 = "scenery1_a1.jpg";
+	//char* imageName2 = "scenery1_a2_rot15.jpg";
+
+	//char* imageName1 = "dolphin_a1.jpg";
+	//char* imageName2 = "dolphin_a2_rot30.jpg";
+
+	//char* imageName1 = "sjtulion_a1.jpg";
+	//char* imageName2 = "sjtulion_a2_rot60.jpg";
+
+	//char* imageName1 = "sjtugate_a1.jpg";
+	//char* imageName2 = "sjtugate_a2_rot30.jpg";
+
+	char* imageName1 = "mj_a1.jpg";
+	char* imageName2 = "mj_a3_rot30_scale1.56.jpg";
+
+	//char* imageName1 = "children_a1.jpg";
+	//char* imageName2 = "children_a2_rot70.jpg";
+
+	//char* imageName1 = "book4.jpg";
+	//char* imageName2 = "book5.jpg";
+
+	/*char* imageName1 = "avatar_a1.jpg";
+	char* imageName2 = "avatar_a2_rot40.jpg";*/
+
 	IplImage* image1 = cvLoadImage(imageName1, CV_LOAD_IMAGE_COLOR);
 	if(image1 == NULL){
 		printf("\nError: failed to load image: %s !", imageName1);
